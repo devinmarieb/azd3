@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <script src="//d3js.org/d3.v3.min.js" charset="utf-8"></script>
+    <script src="//d3js.org/topojson.v1.min.js"></script>
+    <title>Australia Map</title>
+  </head>
+  <body>
+
+    <style media="screen">
+      .subunit{
+        stroke: white;
+        stroke-width: 1px;
+      }
+      .subunit:hover{
+        fill: magenta;
+      }
+      .information{
+        display: block;
+        width: 100%;
+        height: 30px;
+        margin: 2% 0 0 0;
+        font-size: 24px;
+        color: black;
+      }
+    </style>
+
+    <div class="information"></div>
+
+    <script type="text/javascript">
+      var count = 1;
+      var text;
+      var information = document.querySelector('.information');
+
+      var width = 800,
+      height = 600;
+
+      var svg = d3.select("body").append("svg")
+        .attr("width", width)
+        .attr("height", height)
+        .attr("class", "map");
+
+      d3.json("subunits.json", function(error, aus) {
+        if (error) return console.error(error);
+
+        var projection = d3.geo.albers() 
+          .translate([width / 2, height / 2]) 
+          .scale(900) 
+          .rotate([-133, 50]) 
+          .center([0, 25]);
+
+        var path = d3.geo.path()
+          .projection(projection);
+
+        svg.selectAll()
+          .data(topojson.feature(aus, aus.objects.collection).features)
+          .enter().append("path")
+          .attr("class", "subunit")
+          .attr("id", function(){return "region"+count++})
+          .attr("d", path);
+      });
+
+      function checkRegionName(name){
+        switch(name) {
+          case region3:
+            text = 'Northern Territory';
+            break;
+          case region4:
+            text = 'Western Australia';
+            break;
+          case region5:
+            text = 'Australian Capital Territory';
+            break;
+          case region6:
+            text = 'New South Wales';
+            break;
+          case region7:
+            text = 'South Australia';
+            break;
+          case region8:
+            text = 'Victoria';
+            break;
+          case region9:
+            text = 'Queensland';
+            break;
+          case region10:
+            text = 'Norfolk Island';
+            break;
+          case region11:
+            text = 'Tasmania';
+            break;
+          default:
+            text = '';
+        }
+      };
+
+      setTimeout(function(){
+        var units = document.querySelectorAll('.subunit');
+        // console.log(units)
+        for(var i = 0; i<units.length; i++){
+          units[i].addEventListener("mouseover", function(){
+            checkRegionName(this);
+            information.innerText = text;
+          })
+          units[i].addEventListener("mouseout", function(){
+            information.innerText = '';
+          })
+        }
+      }, 300);
+    </script>
+
+  </body>
+</html>
