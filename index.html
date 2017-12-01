@@ -47,7 +47,7 @@
         var projection = d3.geo.albers() 
           .translate([width / 2, height / 2]) 
           .scale(900) 
-          .rotate([-133, 50]) 
+          .rotate([-133, 50]) //add a third index of 10
           .center([0, 25]);
 
         var path = d3.geo.path()
